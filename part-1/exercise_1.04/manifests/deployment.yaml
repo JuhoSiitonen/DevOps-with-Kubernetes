@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-server-app
+  labels:
+    app: node-server-app
+spec:
+  replicas: 2  
+  selector:
+    matchLabels:
+      app: node-server-app
+  template:
+    metadata:
+      labels:
+        app: node-server-app
+    spec:
+      containers:
+      - name: node-server
+        image: juhosii/node-server:latest  
+        ports:
+        - containerPort: 3000  
+        env:
+        - name: PORT
+          value: "3000"  
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "250m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: node-server-service
+spec:
+  type: LoadBalancer  
+  selector:
+    app: node-server-app
+  ports:
+  - protocol: TCP
+    port: 80  
+    targetPort: 3000
