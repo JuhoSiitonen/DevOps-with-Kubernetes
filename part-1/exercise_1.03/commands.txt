@@ -1,1 +1,11 @@
+docker build -t logoutput .
+docker tag logoutput juhosii/devops-kubernetes:1.03
+docker push juhosii/devops-kubernetes:1.03
+
+k3d cluster create
 kubectl apply -f manifests/deployment.yaml
+kubectl get pods
+kubectl logs -f log-output-app-8654b87d94-2fjf9
+
+k3d cluster stop
+

@@ -16,23 +16,8 @@ spec:
     spec:
       containers:
       - name: log-output-app
-        image: juhosii:exercise_1.03
+        image: juhosii/devops-kubernetes:1.03
         resources:
           limits:
             memory: "128Mi"
             cpu: "250m"
-        ports:
-        - containerPort: 3000
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: log-output-app-service
-spec:
-  type: ClusterIP
-  selector:
-    app: log-output-app
-  ports:
-  - protocol: TCP
-    port: 3000
-    targetPort: 3000
