@@ -1,1 +1,10 @@
+docker build -t server .
+docker tag server juhosii/devops-kubernetes:1.04
+docker push juhosii/devops-kubernetes:1.04
+
+k3d cluster create
 kubectl apply -f manifests/deployment.yaml
+kubectl get pods
+kubectl logs -f node-server-app-
+
+k3d cluster stop
