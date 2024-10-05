@@ -2,5 +2,6 @@ docker build -t logoutput .
 docker tag logoutput juhosii/devops-kubernetes:1.01
 docker push juhosii/devops-kubernetes:1.01
 
-k3d create cluster
+k3d cluster create
 kubectl create deployment exercise-01 --image=juhosii/devops-kubernetes:1.01
+kubectl logs -f exercise-01-56984c45bd-hs27r

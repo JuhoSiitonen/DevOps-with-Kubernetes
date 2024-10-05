@@ -1,1 +1,10 @@
-kubectl create deployment exercise_1.02 --image=juhosii/exercise1.02
+docker build -t server .
+docker tag server juhosii/devops-kubernetes:1.02
+docker push juhosii/devops-kubernetes:1.02
+
+k3d cluster create
+kubectl create deployment exercise-02 --image=juhosii/devops-kubernetes:1.02
+kubectl get pods
+kubectl logs -f exercise-02-75dc96cf4b-2r4qs
+
+k3d cluster stop
