@@ -1,0 +1,12 @@
+docker build -t server .
+docker tag server juhosii/devops-kubernetes:1.05
+docker push juhosii/devops-kubernetes:1.05
+
+k3d cluster create
+kubectl apply -f manifests/deployment.yaml
+kubectl get pods
+kubectl logs -f node-server-app-569876db-fjqhk
+
+kubectl port-forward node-server-app-569876db-fjqhk 3003:3000
+
+k3d cluster stop

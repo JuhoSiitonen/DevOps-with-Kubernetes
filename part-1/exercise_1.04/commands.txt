@@ -5,6 +5,6 @@ docker push juhosii/devops-kubernetes:1.04
 k3d cluster create
 kubectl apply -f manifests/deployment.yaml
 kubectl get pods
-kubectl logs -f node-server-app-
+kubectl logs -f node-server-app-84f675668c-8nn62
 
 k3d cluster stop
