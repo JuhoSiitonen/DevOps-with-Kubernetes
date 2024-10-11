@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: node-server
-        image: juhosii/devops-kubernetes:1.05  
+        image: juhosii/devops-kubernetes:1.06
         ports:
         - containerPort: 3001  
         env:
