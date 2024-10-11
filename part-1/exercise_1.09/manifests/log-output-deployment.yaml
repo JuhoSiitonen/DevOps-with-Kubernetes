@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: log-output-app
+  labels:
+    app: log-output-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: log-output-app
+  template:
+    metadata:
+      labels:
+        app: log-output-app
+    spec:
+      containers:
+      - name: log-output-app
+        image: juhosii/devops-kubernetes:1.09
+        ports:
+        - containerPort: 3001 
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "250m"
