@@ -3,10 +3,9 @@ kind: Service
 metadata:
   name: log-output-service
 spec:
-  type: LoadBalancer  
+  type: ClusterIP
   selector:
     app: log-output-app
-  labels:
   ports:
   - protocol: TCP
     port: 8082
