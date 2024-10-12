@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: node-server-service
 spec:
-  type: LoadBalancer  
+  type: ClusterIP
   selector:
     app: node-server-app
   ports:

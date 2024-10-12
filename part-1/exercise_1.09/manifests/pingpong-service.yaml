@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: pingpong-service
 spec:
-  type: LoadBalancer  
+  type: ClusterIP
   selector:
     app: pingpong-app
   ports:
