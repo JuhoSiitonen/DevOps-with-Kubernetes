@@ -5,7 +5,7 @@ require('dotenv').config()
 var counter = 0
 
 
-app.get('/', (req, res) => {
+app.get('/pingpong', (req, res) => {
   res.send(`<h1>Pong ${counter}</h1>`)
   counter++
 })
