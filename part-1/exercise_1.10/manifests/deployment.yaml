@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: log-output-app
+  labels:
+    app: log-output-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: log-output-app
+  template:
+    metadata:
+      labels:
+        app: log-output-app
+    spec:
+      containers:
+      - name: writer
+        image: juhosii/devops-kubernetes:1.10.1
+        volumeMounts:
+        - name: shared-data
+          mountPath: /shared
+      - name: reader
+        image: juhosii/devops-kubernetes:1.10.2
+        volumeMounts:
+        - name: shared-data
+          mountPath: /shared
+      volumes:
+      - name: shared-data
+        emptyDir: {}
