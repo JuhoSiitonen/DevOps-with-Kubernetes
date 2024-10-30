@@ -13,8 +13,8 @@ def print_string_with_timestamp():
     while True:
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         print(f"{timestamp} - {random_string}")
-        with open('/shared/output.txt', 'w') as file:
-            file.write(f"{timestamp} - Hash: {hashed}\n")
+        with open('/usr/src/app/files/output.txt', 'w') as file:
+            file.write(f"{timestamp} - Hash: {random_string}\n")
         time.sleep(5)
 
 if __name__ == "__main__":
