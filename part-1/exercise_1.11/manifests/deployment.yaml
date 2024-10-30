@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: log-output-app
+  labels:
+    app: log-output-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: log-output-app
+  template:
+    metadata:
+      labels:
+        app: log-output-app
+    spec:
+      volumes:
+      - name: shared-data
+        persistentVolumeClaim:
+          claimName: shared-claim
+      containers:
+      - name: logoutput
+        image: juhosii/devops-kubernetes:1.11.1
+        ports:
+        - containerPort: 3001 
+        volumeMounts:
+        - name: shared-data
+          mountPath: /usr/src/app/files

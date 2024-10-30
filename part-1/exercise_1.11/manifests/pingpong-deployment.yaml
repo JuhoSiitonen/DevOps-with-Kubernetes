@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pingpong-app
+  labels:
+    app: pingpong-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pingpong-app
+  template:
+    metadata:
+      labels:
+        app: pingpong-app
+    spec:
+      volumes:
+      - name: shared-data
+        persistentVolumeClaim:
+          claimName: shared-claim
+      containers:
+      - name: pingpong-app
+        image: juhosii/devops-kubernetes:1.11.2
+        ports:
+        - containerPort: 3002
+        volumeMounts:
+        - name: shared-data
+          mountPath: /usr/src/app/files
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "250m"
