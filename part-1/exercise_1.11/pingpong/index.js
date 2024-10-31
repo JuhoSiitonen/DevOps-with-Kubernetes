@@ -5,7 +5,7 @@ const fs = require('fs')
 require('dotenv').config()
 
 const directory = path.join('/', 'usr', 'src', 'app', 'files')
-const filePath = path.join(directory, 'logoutput.txt')
+const filePath = path.join(directory, 'output.txt')
 
 var counter = 0
 
