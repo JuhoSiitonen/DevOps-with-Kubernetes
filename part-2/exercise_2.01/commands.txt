@@ -1,0 +1,15 @@
+docker build -t logoutput .
+docker tag logoutput juhosii/devops-kubernetes:2.01.1
+docker push juhosii/devops-kubernetes:2.01.1
+
+docker build -t pingpong .
+docker tag pingpong juhosii/devops-kubernetes:2.01.2
+docker push juhosii/devops-kubernetes:2.01.2
+
+k3d cluster create --port 8082:30080@agent:0 -p 8081:80@loadbalancer --agents 2
+kubectl apply -f manifests
+kubectl get pods
+kubectl logs -f log-output-app-
+
+
+k3d cluster stop
