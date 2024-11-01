@@ -1,0 +1,16 @@
+docker build -t front .
+docker tag front juhosii/devops-kubernetes:2.02.1
+docker push juhosii/devops-kubernetes:2.02.1
+
+docker build -t backend .
+docker tag backend juhosii/devops-kubernetes:2.02.2
+docker push juhosii/devops-kubernetes:2.02.2
+
+k3d cluster create --port 8082:30080@agent:0 -p 8081:80@loadbalancer --agents 2
+docker exec k3d-k3s-default-agent-0 mkdir -p /tmp/kube
+kubectl apply -f manifests
+kubectl get pods
+kubectl logs -f log-output-app-
+
+
+k3d cluster stop

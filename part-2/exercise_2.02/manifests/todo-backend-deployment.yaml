@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-app
+  labels:
+    app: backend-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-app
+  template:
+    metadata:
+      labels:
+        app: backend-app
+    spec:
+      volumes:
+      - name: shared-data
+        persistentVolumeClaim:
+          claimName: shared-claim
+      containers:
+      - name: backend
+        image: juhosii/devops-kubernetes:2.02.2
+        ports:
+        - containerPort: 3001 
+        volumeMounts:
+        - name: shared-data
+          mountPath: /usr/src/app/files
