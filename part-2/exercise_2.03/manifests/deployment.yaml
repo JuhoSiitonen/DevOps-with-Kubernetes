@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: log-output-app
+  namespace: logoutput
+  labels:
+    app: log-output-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: log-output-app
+  template:
+    metadata:
+      labels:
+        app: log-output-app
+    spec:
+      containers:
+      - name: logoutput
+        image: juhosii/devops-kubernetes:2.01.1
+        ports:
+        - containerPort: 3001 
