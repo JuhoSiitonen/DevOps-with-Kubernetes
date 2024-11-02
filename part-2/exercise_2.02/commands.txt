@@ -1,5 +1,5 @@
-docker build -t front .
-docker tag front juhosii/devops-kubernetes:2.02.1
+docker build -t frontend .
+docker tag frontend juhosii/devops-kubernetes:2.02.1
 docker push juhosii/devops-kubernetes:2.02.1
 
 docker build -t backend .
