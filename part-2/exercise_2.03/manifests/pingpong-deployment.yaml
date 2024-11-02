@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: pingpong-app
-        image: juhosii/devops-kubernetes:2.01.2
+        image: juhosii/devops-kubernetes:2.03.2
         ports:
         - containerPort: 3002
         resources:

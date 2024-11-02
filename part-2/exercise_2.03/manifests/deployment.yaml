@@ -17,6 +17,6 @@ spec:
     spec:
       containers:
       - name: logoutput
-        image: juhosii/devops-kubernetes:2.01.1
+        image: juhosii/devops-kubernetes:2.03.1
         ports:
         - containerPort: 3001 

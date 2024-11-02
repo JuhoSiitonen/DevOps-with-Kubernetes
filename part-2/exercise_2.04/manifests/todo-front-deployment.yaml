@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-app
+  namespace: project
+  labels:
+    app: frontend-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend-app
+  template:
+    metadata:
+      labels:
+        app: frontend-app
+    spec:
+      volumes:
+      - name: shared-data
+        persistentVolumeClaim:
+          claimName: shared-claim
+      containers:
+      - name: frontend
+        image: juhosii/devops-kubernetes:2.04.1
+        ports:
+        - containerPort: 3001 
+        volumeMounts:
+        - name: shared-data
+          mountPath: /usr/src/app/files
