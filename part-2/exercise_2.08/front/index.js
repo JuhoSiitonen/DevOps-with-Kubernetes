@@ -79,7 +79,7 @@ app.get('/', (req, res) => {
         const response = await fetch(API_URL);
         const todos = await response.json();
         const todoList = document.getElementById('todo-list');
-        todoList.innerHTML = todos.map((todo) => "<li>" + todo.text + "</li>").join('');
+        todoList.innerHTML = todos.map((todo) => "<li>" + todo.todo + "</li>").join('');
       } catch (error) {
         console.error('Error fetching todos:', error);
       }

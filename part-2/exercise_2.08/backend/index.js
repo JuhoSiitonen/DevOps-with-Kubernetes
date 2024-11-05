@@ -3,48 +3,81 @@ const fs = require('fs');
 const path = require('path');
 const bodyParser = require('body-parser');
 const app = express();
+const { Pool } = require('pg');
 app.use(bodyParser.json());
 
-const filePath = path.join('/usr/src/app/files', 'todos.json');
-
-function readTodosFromFile() {
-  try {
-    if (fs.existsSync(filePath)) {
-      const data = fs.readFileSync(filePath, 'utf8');
-      return JSON.parse(data);
-    }
-    return [];
-  } catch (error) {
-    console.error('Error reading todos from file:', error);
-    return [];
-  }
-}
-
-function writeTodosToFile(todos) {
-  try {
-    fs.writeFileSync(filePath, JSON.stringify(todos, null, 2));
-  } catch (error) {
-    console.error('Error writing todos to file:', error);
-  }
-}
-
-app.get('/todos', (req, res) => {
-  const todos = readTodosFromFile();
-  res.json(todos);
+const pool = new Pool({
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  user: process.env.POSTGRES_USER,
+  password: process.env.POSTGRES_PASSWORD,
+  database: process.env.DB_NAME
 });
 
-app.post('/todos', (req, res) => {
+(async () => {
+  const client = await pool.connect();
+  try {
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS todo_list (
+        id SERIAL PRIMARY KEY,
+        todo TEXT
+      );
+    `);
+    
+    console.log("Todo table is ready!");
+  } finally {
+    client.release();
+  }
+})();
+
+
+async function readTodosFromDB() {
+  const client = await pool.connect();
+  try {
+    const result = await client.query('SELECT * FROM todo_list');
+    return result.rows;
+  } finally {
+    client.release();
+  }
+}
+
+async function writeTodoToDB(newTodo) {
+  const client = await pool.connect();
+  try {
+    const result = await client.query(
+      'INSERT INTO todo_list (todo) VALUES ($1) RETURNING *',
+      [newTodo]
+    );
+    return result.rows[0];
+  } finally {
+    client.release();
+  }
+}
+
+app.get('/todos', async (req, res) => {
+  try {
+    const todos = await readTodosFromDB();
+    res.json(todos);
+  } catch (err) {
+    console.error("Error reading todos:", err);
+    res.status(500).json({ error: "Failed to retrieve todos." });
+  }
+});
+
+app.post('/todos', async (req, res) => {
   const newTodo = req.body.text;
   
   if (!newTodo || newTodo.length > 140) {
     return res.status(400).json({ error: 'Todo must be 140 characters or less.' });
   }
 
-  const todos = readTodosFromFile();
-  const todo = { id: todos.length + 1, text: newTodo };
-  todos.push(todo);
-  writeTodosToFile(todos);
-  res.status(201).json(todo);
+  try {
+    const addedTodo = await writeTodoToDB(newTodo);
+    res.status(201).json(addedTodo);
+  } catch (err) {
+    console.error("Error adding todo:", err);
+    res.status(500).json({ error: "Failed to add todo." });
+  }
 });
 
 const PORT = process.env.PORT || 3001;
