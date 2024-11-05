@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: todo-post-script
+  namespace: project
+data:
+  add_random_todo.sh: |
+    #!/bin/bash
+    URL=$(curl -s -I https://en.wikipedia.org/wiki/Special:Random | grep -i Location | awk '{print $2}' | tr -d '\r\n')
+    TODO_TEXT="Read $URL"
+    curl -X POST http://backend-service.project:8082/todos \
+         -H "Content-Type: application/json" \
+         -d "{\"text\": \"$TODO_TEXT\"}"
