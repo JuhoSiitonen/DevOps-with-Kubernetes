@@ -32,6 +32,9 @@ const pool = new Pool({
   }
 })();
 
+app.get("/", (req, res) => {
+  res.send("<h1>mainpage</h1>")
+})
 
 app.get('/pingpong', async (req, res) => {
   try {

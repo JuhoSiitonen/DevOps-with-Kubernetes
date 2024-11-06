@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: pingpong-app
-        image: juhosii/devops-kubernetes:2.07.2
+        image: juhosii/devops-kubernetes:3.01.2
         env:
           - name: DB_HOST
             value: "postgres-service.logoutput"
