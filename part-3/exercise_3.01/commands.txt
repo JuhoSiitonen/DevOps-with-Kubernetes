@@ -13,4 +13,6 @@ kubectl apply -f manifests
 kubectl get pods
 kubectl logs -f 
 
+kubectl delete -f .
+
 
