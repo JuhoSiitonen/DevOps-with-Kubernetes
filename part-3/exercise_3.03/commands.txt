@@ -1,0 +1,34 @@
+docker build -t frontend .
+docker tag frontend juhosii/devops-kubernetes:3.03.1
+docker push juhosii/devops-kubernetes:3.03.1
+
+docker build -t backend .
+docker tag backend juhosii/devops-kubernetes:3.03.2
+docker push juhosii/devops-kubernetes:3.03.2
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""
+kubectl create namespace prometheus
+helm install prometheus-community/kube-prometheus-stack --generate-name --namespace prometheus
+kubectl get po -n prometheus
+kubectl -n prometheus port-forward kube-prometheus-stack-1730846032-grafana-6b8d54f9d6-nztp8 3000
+
+helm repo add grafana https://grafana.github.io/helm-charts
+helm repo update
+kubectl create namespace loki-stack
+helm upgrade --install loki --namespace=loki-stack grafana/loki-stack
+"""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+kubectl create namespace project
+
+kubens project
+
+export SOPS_AGE_KEY_FILE=/home/juho/key.txt
+sops --decrypt postgres-secret.enc.yaml > postgres-secret.yaml 
+
+kubectl apply -k .
+
+kubectl get pods
+kubectl logs -f 
+
+
+k3d cluster stop
