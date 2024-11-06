@@ -32,6 +32,7 @@ const pool = new Pool({
   }
 })();
 
+app.get('/', (req, res) => res.status(200).send('Healthy'));
 
 app.get('/pingpong', async (req, res) => {
   try {

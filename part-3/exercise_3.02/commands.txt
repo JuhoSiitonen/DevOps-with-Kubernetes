@@ -1,15 +1,10 @@
 docker build -t logoutput .
-docker tag logoutput juhosii/devops-kubernetes:2.07.1
-docker push juhosii/devops-kubernetes:2.07.1
+docker tag logoutput juhosii/devops-kubernetes:3.02.1
+docker push juhosii/devops-kubernetes:3.02.1
 
 docker build -t pingpong .
-docker tag pingpong juhosii/devops-kubernetes:2.07.2
-docker push juhosii/devops-kubernetes:2.07.2
-
-k3d cluster create --port 8082:30080@agent:0 -p 8081:80@loadbalancer --agents 2
-docker exec k3d-k3s-default-agent-0 mkdir -p /tmp/kube
-
-kubectl create namespace logoutput
+docker tag pingpong juhosii/devops-kubernetes:3.02.222
+docker push juhosii/devops-kubernetes:3.02.222
 
 kubens logoutput 
 
@@ -18,6 +13,8 @@ sops --decrypt postgres-secret.enc.yaml > postgres-secret.yaml
 
 kubectl apply -f manifests
 kubectl get pods
+kubectl get svc --watch
+kubectl get ing
 kubectl logs -f 
 
 
