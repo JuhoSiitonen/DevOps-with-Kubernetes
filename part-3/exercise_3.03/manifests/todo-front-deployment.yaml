@@ -21,7 +21,7 @@ spec:
           claimName: shared-claim
       containers:
       - name: frontend
-        image: juhosii/devops-kubernetes:3.03.1
+        image: FRONT_IMAGE
         ports:
         - containerPort: 3001 
         volumeMounts:

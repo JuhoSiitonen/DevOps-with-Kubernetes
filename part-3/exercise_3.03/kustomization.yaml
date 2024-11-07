@@ -13,3 +13,10 @@ resources:
   - manifests/todo-backend-deployment.yaml
   - manifests/ingress.yaml
   - manifests/cronjob.yaml
+images:
+- name: FRONT_IMAGE
+  newName: juhosii/devops-kubernetes
+  newTag: 3.03.1
+- name: BACKEND_IMAGE
+  newName: juhosii/devops-kubernetes
+  newTag: 3.03.2

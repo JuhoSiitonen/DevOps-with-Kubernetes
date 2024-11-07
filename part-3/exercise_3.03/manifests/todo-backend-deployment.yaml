@@ -21,7 +21,7 @@ spec:
           claimName: shared-claim
       containers:
       - name: backend
-        image: juhosii/devops-kubernetes:3.03.2
+        image: BACKEND_IMAGE
         env:
           - name: DB_HOST
             value: "postgres-service.project"
