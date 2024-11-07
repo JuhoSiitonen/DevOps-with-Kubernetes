@@ -15,10 +15,6 @@ spec:
       labels:
         app: backend-app
     spec:
-      volumes:
-      - name: shared-data
-        persistentVolumeClaim:
-          claimName: shared-claim
       containers:
       - name: backend
         image: BACKEND_IMAGE

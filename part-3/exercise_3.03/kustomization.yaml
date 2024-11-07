@@ -4,8 +4,7 @@ resources:
   - manifests/postgres-configmap.yaml
   - manifests/postgres-secret.yaml
   - manifests/postgres-deployment.yaml
-  - manifests/persistentvolume.yaml
-  - manifests/persistenvolumeclaim.yaml
+  - manifests/persistentvolumeclaim.yaml
   - manifests/todo-script-configmap.yaml
   - manifests/todo-front-service.yaml
   - manifests/todo-front-deployment.yaml
@@ -16,7 +15,7 @@ resources:
 images:
 - name: FRONT_IMAGE
   newName: juhosii/devops-kubernetes
-  newTag: 3.03.1
+  newTag: 3.03.11
 - name: BACKEND_IMAGE
   newName: juhosii/devops-kubernetes
   newTag: 3.03.2

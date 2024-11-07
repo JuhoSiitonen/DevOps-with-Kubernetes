@@ -1,6 +1,6 @@
 docker build -t frontend .
-docker tag frontend juhosii/devops-kubernetes:3.03.1
-docker push juhosii/devops-kubernetes:3.03.1
+docker tag frontend juhosii/devops-kubernetes:3.03.11
+docker push juhosii/devops-kubernetes:3.03.11
 
 docker build -t backend .
 docker tag backend juhosii/devops-kubernetes:3.03.2

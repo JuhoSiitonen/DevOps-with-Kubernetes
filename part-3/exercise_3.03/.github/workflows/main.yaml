@@ -7,8 +7,8 @@ env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
   GKE_CLUSTER: devops-with-kubernetes-cluster
   GKE_ZONE: europe-north1-b
-  IMAGE: juhosii/devops-kubernetes  
-  DEPLOYMENT: dwk-environments
+  IMAGE: devops-kubernetes  
+  DEPLOYMENT: devops-kubernetes
   BRANCH: ${{ github.ref_name }}
 
 jobs:
@@ -41,15 +41,20 @@ jobs:
 
       - name: Build and publish
         run: |-
+          cd front
           docker build --tag "gcr.io/$PROJECT_ID/$IMAGE:$BRANCH-$GITHUB_SHA" .
           docker push "gcr.io/$PROJECT_ID/$IMAGE:$BRANCH-$GITHUB_SHA"
+          cd ../backend
+          docker build --tag "gcr.io/$PROJECT_ID/$IMAGE:$BRANCH-$GITHUB_SHA-BACKEND" .
+          docker push "gcr.io/$PROJECT_ID/$IMAGE:$BRANCH-$GITHUB_SHA-BACKEND"
 
       - name: Set up Kustomize
         uses: imranismail/setup-kustomize@v2
 
       - name: Deploy
         run: |-
-          kustomize edit set image PROJECT/IMAGE=gcr.io/$PROJECT_ID/$IMAGE:$BRANCH-$GITHUB_SHA
+          kustomize edit set image FRONT_IMAGE=gcr.io/$PROJECT_ID/$IMAGE:$BRANCH-$GITHUB_SHA
+          kustomize edit set image BACKEND_IMAGE=gcr.io/$PROJECT_ID/$IMAGE:$BRANCH-$GITHUB_SHA-BACKEND
           kustomize build . | kubectl apply -f -
           kubectl rollout status deployment $DEPLOYMENT
           kubectl get services -o wide

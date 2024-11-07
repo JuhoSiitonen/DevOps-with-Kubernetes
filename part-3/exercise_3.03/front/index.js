@@ -9,11 +9,6 @@ const app = express();
 const cacheDir = path.join('/', 'usr', 'src', 'app', 'files')
 const imagePath = path.join(cacheDir, 'image.jpg');
 
-const todos = [
-    { text: "Learn Kubernetes" },
-    { text: "Build a Node.js app" },
-    { text: "Deploy to cloud" },
-  ];
 
 async function fetchAndCacheImage() {
   try {
@@ -72,7 +67,7 @@ app.get('/', (req, res) => {
   <p id="error-message"></p>
 
   <script>
-    const API_URL = 'http://localhost:8081/todos';
+    const API_URL = '/todos';
 
     async function fetchTodos() {
       try {

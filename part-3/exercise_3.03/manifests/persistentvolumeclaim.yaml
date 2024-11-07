@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: shared-claim
+  name: nodeserver-pvc
   namespace: project
 spec:
-  storageClassName: nodeserverpics-pv
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
+  storageClassName: standard
   resources:
     requests:
-      storage: 1Gi
+      storage: 200Mi

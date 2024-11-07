@@ -16,14 +16,14 @@ spec:
         app: frontend-app
     spec:
       volumes:
-      - name: shared-data
+      - name: nodeserver-storage
         persistentVolumeClaim:
-          claimName: shared-claim
+          claimName: nodeserver-pvc
       containers:
       - name: frontend
         image: FRONT_IMAGE
         ports:
         - containerPort: 3001 
         volumeMounts:
-        - name: shared-data
+        - name: nodeserver-storage
           mountPath: /usr/src/app/files
