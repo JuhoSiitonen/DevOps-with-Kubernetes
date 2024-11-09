@@ -77,6 +77,7 @@ app.get('/todos', async (req, res) => {
 });
 
 app.post('/todos', async (req, res) => {
+  console.log("Received POST request:", req.body);
   const newTodo = req.body.text;
   
   if (!newTodo || newTodo.length > 140) {

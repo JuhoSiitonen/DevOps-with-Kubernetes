@@ -8,7 +8,7 @@ env:
   GKE_CLUSTER: devops-with-kubernetes-cluster
   GKE_ZONE: europe-north1-b
   IMAGE: devops-kubernetes  
-  BRANCH: ${{ github.ref_name }}
+  BRANCH: ${{ github.ref_name == 'main' && 'project' || github.ref_name }}
 
 jobs:
   build-publish-deploy:
