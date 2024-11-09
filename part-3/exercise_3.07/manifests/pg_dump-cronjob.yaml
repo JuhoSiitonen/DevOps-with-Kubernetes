@@ -1,0 +1,49 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: pg-backup-job
+  namespace: project
+spec:
+  schedule: "0 0 * * *"  
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: pg-backup
+            image: postgres:latest
+            env:
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_USER
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /var/secrets/google/key.json
+            volumeMounts:
+            - name: gcs-credentials
+              mountPath: /var/secrets/google
+              readOnly: true
+            - name: gcs-tools
+              mountPath: /usr/local/bin/gsutil
+              readOnly: true
+            command:
+              - /bin/sh
+              - -c
+              - |
+                export BACKUP_FILE="/tmp/db_backup_$(date +\%Y\%m\%d\%H\%M\%S).sql"
+                pg_dump -h postgres-service -U $POSTGRES_USER -d projectdb > $BACKUP_FILE
+                gsutil cp $BACKUP_FILE gs://devops-kubernetes-backups/
+                rm $BACKUP_FILE
+          restartPolicy: OnFailure
+          volumes:
+          - name: gcs-credentials
+            secret:
+              secretName: gcs-credentials
+          - name: gcs-tools
+            emptyDir: {}

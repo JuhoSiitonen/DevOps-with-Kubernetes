@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: add-random-todo
+  namespace: project
+spec:
+  schedule: "0 * * * *" 
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: todo-poster
+            image: curlimages/curl:latest 
+            command: ["/bin/sh", "/scripts/add_random_todo.sh"]
+            volumeMounts:
+              - name: script-volume
+                mountPath: /scripts/add_random_todo.sh
+                subPath: add_random_todo.sh
+                readOnly: true
+          restartPolicy: OnFailure
+          volumes:
+            - name: script-volume
+              configMap:
+                name: todo-post-script
+                defaultMode: 0755
