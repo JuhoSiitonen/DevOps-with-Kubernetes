@@ -1,5 +1,3 @@
-kubectl create secret generic gcs-credentials --from-file=key.json=/home/juho/private-key.json
-gsutil mb -p <my-gcp-project-id> gs://devops-kubernetes-backups
 
 kubens project
 

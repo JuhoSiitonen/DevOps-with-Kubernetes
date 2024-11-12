@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: gcs-test-pod
+  namespace: project
+spec:
+  containers:
+  - name: gcs-tester
+    image: google/cloud-sdk:latest
+    env:
+    - name: GOOGLE_APPLICATION_CREDENTIALS
+      value: /var/secrets/google/bucket-key.json
+    volumeMounts:
+    - name: gcs-credentials
+      mountPath: /var/secrets/google
+      readOnly: true
+    command:
+      - /bin/sh
+      - -c
+      - |
+        echo "Testing GCS access..." && \
+        gsutil ls gs://devops-kubernetes-backups/
+
+        curl -H "Whats the service account being used" http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/
+
+        echo "Test upload for permissions" > test_upload.txt
+        gsutil cp test_upload.txt gs://devops-kubernetes-backups/
+  volumes:
+  - name: gcs-credentials
+    secret:
+      secretName: gcs-credentials
+  restartPolicy: Never
