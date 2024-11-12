@@ -1,0 +1,10 @@
+
+kubens project
+
+export SOPS_AGE_KEY_FILE=/home/juho/key.txt
+sops --decrypt postgres-secret.enc.yaml > postgres-secret.yaml 
+
+kubectl apply -k .
+
+kubectl get pods
+kubectl logs -f 

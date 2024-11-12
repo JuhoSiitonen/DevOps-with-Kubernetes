@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ResourceQuota
+metadata: 
+  name: project-rq
+  namespace: project
+spec:
+  hard:
+    requests.cpu: 700m
+    requests.memory: 2Gi 
+    limits.cpu: 2000m
+    limits.memory: 4Gi
