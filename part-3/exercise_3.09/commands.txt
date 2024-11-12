@@ -1,0 +1,20 @@
+docker build -t logoutput .
+docker tag logoutput juhosii/devops-kubernetes:3.09.1
+docker push juhosii/devops-kubernetes:3.09.1
+
+docker build -t pingpong .
+docker tag pingpong juhosii/devops-kubernetes:3.09.2
+docker push juhosii/devops-kubernetes:3.09.2
+
+kubens logoutput 
+
+export SOPS_AGE_KEY_FILE=/home/juho/key.txt
+sops --decrypt postgres-secret.enc.yaml > postgres-secret.yaml 
+
+kubectl apply -f manifests
+kubectl get pods
+kubectl get svc --watch
+kubectl get ing
+kubectl logs -f 
+
+
