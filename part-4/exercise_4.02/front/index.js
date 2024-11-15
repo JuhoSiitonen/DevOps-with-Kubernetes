@@ -40,6 +40,8 @@ app.get('/image', (req, res) => {
 
 setInterval(fetchAndCacheImage, 60 * 60 * 1000); 
 
+app.get('/healthz', (req, res) => res.status(200).send('Healthy'));
+
 app.get('/', (req, res) => {
   res.send(`
     <!DOCTYPE html>

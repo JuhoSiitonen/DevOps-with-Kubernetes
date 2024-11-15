@@ -66,6 +66,8 @@ async function writeTodoToDB(newTodo) {
 
 app.get('/', (req, res) => res.status(200).send('Healthy'));
 
+app.get('/healthz', (req, res) => res.status(200).send('Healthy'));
+
 app.get('/todos', async (req, res) => {
   try {
     const todos = await readTodosFromDB();

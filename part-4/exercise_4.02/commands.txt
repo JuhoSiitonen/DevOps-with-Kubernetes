@@ -1,6 +1,8 @@
 
 kubens project
 
+helm install nginx-ingress ingress-nginx/ingress-nginx
+
 export SOPS_AGE_KEY_FILE=/home/juho/key.txt
 sops --decrypt postgres-secret.enc.yaml > postgres-secret.yaml 
 
