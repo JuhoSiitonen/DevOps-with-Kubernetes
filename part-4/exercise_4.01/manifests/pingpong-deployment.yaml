@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pingpong-app
+  namespace: logoutput
+  labels:
+    app: pingpong-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pingpong-app
+  template:
+    metadata:
+      labels:
+        app: pingpong-app
+    spec:
+      containers:
+      - name: pingpong-app
+        image: juhosii/devops-kubernetes:4.01.222
+        readinessProbe:
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          httpGet:
+            path: /healthz
+            port: 3002
+        resources:
+          requests:
+            memory: "32Mi"
+            cpu: "150m"
+          limits:
+            memory: "256Mi"
+            cpu: "300m"
+        env:
+          - name: DB_HOST
+            value: "postgres-service"
+          - name: DB_PORT
+            value: "5432"
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                name: postgres-secret
+                key: POSTGRES_USER
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: postgres-secret
+                key: POSTGRES_PASSWORD
+          - name: DB_NAME
+            value: "pingpongdb"
+        ports:
+        - containerPort: 3002
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "250m"
