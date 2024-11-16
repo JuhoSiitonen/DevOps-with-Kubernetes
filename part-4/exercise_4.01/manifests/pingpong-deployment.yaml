@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: pingpong-app
-        image: juhosii/devops-kubernetes:4.01.222
+        image: juhosii/devops-kubernetes:4.01.24
         readinessProbe:
           initialDelaySeconds: 15
           periodSeconds: 10

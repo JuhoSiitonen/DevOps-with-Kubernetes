@@ -11,8 +11,7 @@ const pool = new Pool({
   database: process.env.DB_NAME
 });
 
-(async () => {
-  const client = await pool.connect();
+async function setupDatabase(client) {
   try {
     await client.query(`
       CREATE TABLE IF NOT EXISTS pingpong_counter (
@@ -25,18 +24,40 @@ const pool = new Pool({
       SELECT 0
       WHERE NOT EXISTS (SELECT 1 FROM pingpong_counter);
     `);
-
     console.log("pingpong_counter table is ready!");
-  } finally {
-    client.release();
+  } catch (err) {
+    console.error("Error during database setup:", err.message);
   }
-})();
+}
+
+async function connectToDatabase() {
+  while (true) {
+    try {
+      const client = await pool.connect();
+      console.log("Database connection successful!");
+      await setupDatabase(client);
+      client.release();
+      break;
+    } catch (err) {
+      console.error(`Database connection failed: ${err.message}`);
+      await new Promise(res => setTimeout(res, 2000));
+      }
+    }
+  }
+
+connectToDatabase()
 
 app.get('/', (req, res) => res.status(200).send('Healthy'));
 
-app.get('/healthz', (req,res) => {
-  return res.status(200).send('Healthy!')
-})
+app.get('/healthz', async (req,res) => {
+  try {
+    await pool.query('SELECT 1');
+    return res.status(200).send('Healthy!');
+  } catch (err) {
+    console.error("Health check failed:", err.message);
+    return res.status(500).send('Unhealthy!');
+  }
+});
 
 app.get('/pingpong', async (req, res) => {
   try {
