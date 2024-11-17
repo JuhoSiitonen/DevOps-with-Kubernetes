@@ -1,0 +1,15 @@
+
+kubens project
+
+helm install nginx-ingress ingress-nginx/ingress-nginx
+
+kubectl create namespace argo-rollouts
+kubectl apply -n argo-rollouts -f https://github.com/argoproj/argo-rollouts/releases/latest/download/install.yaml
+
+export SOPS_AGE_KEY_FILE=/home/juho/key.txt
+sops --decrypt postgres-secret.enc.yaml > postgres-secret.yaml 
+
+kubectl apply -k .
+
+kubectl get pods
+kubectl logs -f 

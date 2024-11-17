@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-app
+  namespace: project
+  labels:
+    app: frontend-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend-app
+  template:
+    metadata:
+      labels:
+        app: frontend-app
+    spec:
+      volumes:
+      - name: nodeserver-storage
+        persistentVolumeClaim:
+          claimName: nodeserver-pvc
+      containers:
+      - name: frontend
+        image: FRONT_IMAGE
+        readinessProbe:
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          httpGet:
+            path: /healthz
+            port: 3001
+        livenessProbe:
+          initialDelaySeconds: 20 
+          periodSeconds: 10
+          httpGet:
+            path: /healthz
+            port: 3001
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "200m"
+          limits:
+            memory: "500Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 3001 
+        volumeMounts:
+        - name: nodeserver-storage
+          mountPath: /usr/src/app/files
