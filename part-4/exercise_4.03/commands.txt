@@ -22,6 +22,8 @@ helm upgrade --install loki --namespace=loki-stack grafana/loki-stack
 
 kubectl -n prometheus port-forward prometheus-kube-prometheus-stack-1731-prometheus-0 9090:9090
 
+scalar(count(kube_pod_info{namespace="prometheus",created_by_kind="StatefulSet"}))
+
 kubectl create namespace logoutput
 
 kubens logoutput 
