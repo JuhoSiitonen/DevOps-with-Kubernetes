@@ -4,6 +4,7 @@ resources:
   - manifests/postgres-secret.yaml
   - manifests/postgres-configmap.yaml
   - manifests/postgres-deployment.yaml
+  - manifests/persistentvolume.yaml
   - manifests/persistentvolumeclaim.yaml
   - manifests/todo-script-configmap.yaml
   - manifests/todo-front-service.yaml

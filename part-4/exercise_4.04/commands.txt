@@ -1,15 +1,40 @@
+docker build -t frontend .
+docker tag frontend juhosii/devops-kubernetes:4.04.1
+docker push juhosii/devops-kubernetes:4.04.1
 
-kubens project
+docker build -t backend .
+docker tag backend juhosii/devops-kubernetes:4.04.2
+docker push juhosii/devops-kubernetes:4.04.2
 
-helm install nginx-ingress ingress-nginx/ingress-nginx
+kubectl config use-context k3d-k3s-default
+k3d cluster create --port 8082:30080@agent:0 -p 8081:80@loadbalancer --agents 2
+docker exec k3d-k3s-default-agent-0 mkdir -p /tmp/kube
 
 kubectl create namespace argo-rollouts
 kubectl apply -n argo-rollouts -f https://github.com/argoproj/argo-rollouts/releases/latest/download/install.yaml
+
+------------ installing argo to kubectl ----------
+curl -LO https://github.com/argoproj/argo-rollouts/releases/latest/download/kubectl-argo-rollouts-linux-amd64
+chmod +x ./kubectl-argo-rollouts-linux-amd64
+sudo mv ./kubectl-argo-rollouts-linux-amd64 /usr/local/bin/kubectl-argo-rollouts
+---------------------------------------------------
+
+kubectl create namespace project
+
+kubens project
+
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo update
+helm install nginx-ingress ingress-nginx/ingress-nginx
 
 export SOPS_AGE_KEY_FILE=/home/juho/key.txt
 sops --decrypt postgres-secret.enc.yaml > postgres-secret.yaml 
 
 kubectl apply -k .
 
+kubectl argo rollouts get rollout backend-app --watch
+
 kubectl get pods
 kubectl logs -f 
+
+k3d cluster stop
