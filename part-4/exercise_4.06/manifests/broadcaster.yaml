@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: project-broadcaster
+  namespace: project
+spec:
+  replicas: 6
+  selector:
+    matchLabels:
+      app: broadcaster
+  template:
+    metadata:
+      labels:
+        app: broadcaster
+    spec:
+      containers:
+        - name: broadcaster
+          image: BROADCASTER_IMAGE
+          env:
+            - name: NATS_URL
+              value: nats://my-nats.default:4222
+            - name: BROADCASTER_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: project-broadcaster-key
+                  key: BROADCASTER_KEY
