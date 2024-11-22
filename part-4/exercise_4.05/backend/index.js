@@ -28,7 +28,7 @@ async function setupDatabase (client) {
     await client.query(`
       CREATE TABLE IF NOT EXISTS todo_list (
         id SERIAL PRIMARY KEY,
-        todo TEXT
+        todo TEXT,
         done BOOLEAN DEFAULT FALSE
       );
     `);
@@ -128,7 +128,7 @@ app.put('/todos/:id', async (req, res) => {
   }
 
   try {
-    await pool.query('UPDATE todos SET done = $1 WHERE id = $2', [done, id]);
+    await pool.query('UPDATE todo_list SET done = $1 WHERE id = $2', [done, id]);
     res.status(200).send('Todo updated successfully');
   } catch (err) {
     console.error('Error updating todo:', err);

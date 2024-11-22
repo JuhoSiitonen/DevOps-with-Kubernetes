@@ -1,10 +1,10 @@
 docker build -t frontend .
-docker tag frontend juhosii/devops-kubernetes:4.05.1
-docker push juhosii/devops-kubernetes:4.05.1
+docker tag frontend juhosii/devops-kubernetes:4.05.11
+docker push juhosii/devops-kubernetes:4.05.11
 
 docker build -t backend .
-docker tag backend juhosii/devops-kubernetes:4.05.2
-docker push juhosii/devops-kubernetes:4.05.2
+docker tag backend juhosii/devops-kubernetes:4.05.24
+docker push juhosii/devops-kubernetes:4.05.24
 
 kubectl config use-context k3d-k3s-default
 k3d cluster create --port 8082:30080@agent:0 -p 8081:80@loadbalancer --agents 2
@@ -23,14 +23,14 @@ helm upgrade --install loki --namespace=loki-stack grafana/loki-stack
 
 kubectl -n prometheus port-forward prometheus-kube-prometheus-stack-1731-prometheus-0 9090:9090
 
-helm install nginx-ingress ingress-nginx/ingress-nginx
-
 kubectl create namespace argo-rollouts
 kubectl apply -n argo-rollouts -f https://github.com/argoproj/argo-rollouts/releases/latest/download/install.yaml
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""" LOGGING
 kubectl create namespace project
 kubens project
+
+helm install nginx-ingress ingress-nginx/ingress-nginx
 
 export SOPS_AGE_KEY_FILE=/home/juho/key.txt
 sops --decrypt postgres-secret.enc.yaml > postgres-secret.yaml 
