@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - manifests/postgres-secret.yaml
+  - manifests/postgres-configmap.yaml
+  - manifests/postgres.yaml
+  - manifests/persistentvolume.yaml
+  - manifests/persistentvolumeclaim.yaml
+  - manifests/configmap.yaml
+  - manifests/logoutput-service.yaml
+  - manifests/deployment.yaml
+  - manifests/pingpong-service.yaml
+  - manifests/pingpong-deployment.yaml
+  - manifests/ingress.yaml
+  - manifests/resourcequota.yaml
+images:
+- name: LOGOUTPUT_IMAGE
+  newName: juhosii/devops-kubernetes
+  newTag: 4.07.1
+- name: PINGPONG_IMAGE
+  newName: juhosii/devops-kubernetes
+  newTag: 4.07.2

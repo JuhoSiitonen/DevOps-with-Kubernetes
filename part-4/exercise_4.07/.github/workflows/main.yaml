@@ -1,0 +1,45 @@
+ame: Build, Publish
+
+on:
+  push:
+
+jobs:
+  build-publish-deploy:
+    name: Build, Publish and Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Build and publish 
+        run: |-
+          cd logoutput
+          docker build --tag "juhosii/devops-kubernetes:$GITHUB_SHA" .
+          docker push "juhosii/devops-kubernetes:$GITHUB_SHA"
+          cd ../pingpong
+          docker build --tag "juhosii/devops-kubernetes:$GITHUB_SHA-PINGPONG" .
+          docker push "juhosii/devops-kubernetes:$GITHUB_SHA-PINGPONG"
+          cd ..
+
+      - name: Set up Kustomize
+        uses: imranismail/setup-kustomize@v2
+
+      - name: Use right image
+        run: |-
+          kustomize edit set image LOGOUTPUT_IMAGE=juhosii/devops-kubernetes:$GITHUB_SHA
+          kustomize edit set image PINGPONG_IMAGE=juhosii/devops-kubernetes:$GITHUB_SHA-PINGPONG
+
+      - name: commit kustomization.yaml to GitHub
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: 'kustomization.yaml'
+          message: New version released ${{ github.sha }}
+
+      
