@@ -7,9 +7,18 @@ const logger = require('./logger')
 const NATS = require('nats')
 const natsCodec = NATS.StringCodec()
 
-const natsURL = process.env.NATS_URL || 'nats://nats:4222'
+const natsURL = process.env.NATS_URL || 'nats://my-nats:4222'
 
-const nc = NATS.connect({servers: natsURL})
+let nc; 
+
+(async () => {
+  try {
+    nc = await NATS.connect({ servers: natsURL });
+    console.log('Connected to NATS server:', natsURL);
+  } catch (err) {
+    console.error('Error connecting to NATS server:', err.message);
+  }
+})();
 
 const requestLogger = (request, response, next) => {
   logger.info('Method:', request.method)
@@ -118,7 +127,11 @@ app.post('/todos', async (req, res) => {
 
   try {
     const addedTodo = await writeTodoToDB(newTodo);
-    (await nc).publish('todo-data', natsCodec.encode(`ADDED TODO: ${newTodo}`))
+    if (nc) {
+      await nc.publish('todo-data', natsCodec.encode(`ADDED TODO: ${newTodo}`));
+    } else {
+      console.error('NATS client is not connected. Message not published.');
+    }
     res.status(201).json(addedTodo);
   } catch (err) {
     console.error("Error adding todo:", err);
@@ -136,7 +149,7 @@ app.put('/todos/:id', async (req, res) => {
 
   try {
     await pool.query('UPDATE todo_list SET done = $1 WHERE id = $2', [done, id]);
-    (await nc).publish('todo-data', natsCodec.encode(`TODO DONE: ${id}`))
+    await nc.publish('todo-data', natsCodec.encode(`TODO DONE: ${id}`))
     console.log(`Todo ${id} updated successfully`);
     res.status(200).send('Todo updated successfully');
   } catch (err) {

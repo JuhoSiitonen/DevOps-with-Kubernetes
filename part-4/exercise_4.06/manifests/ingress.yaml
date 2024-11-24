@@ -4,7 +4,6 @@ metadata:
   name: node-server-ingress
   namespace: project
 spec:
-  ingressClassName: nginx
   rules:
   - http:
       paths:

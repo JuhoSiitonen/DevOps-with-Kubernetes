@@ -3,12 +3,12 @@ docker tag frontend juhosii/devops-kubernetes:4.06.1
 docker push juhosii/devops-kubernetes:4.06.1
 
 docker build -t backend .
-docker tag backend juhosii/devops-kubernetes:4.06.2
-docker push juhosii/devops-kubernetes:4.06.2
+docker tag backend juhosii/devops-kubernetes:4.06.25
+docker push juhosii/devops-kubernetes:4.06.25
 
 docker build -t broadcaster .
-docker tag broadcaster juhosii/devops-kubernetes:4.06.3
-docker push juhosii/devops-kubernetes:4.06.3
+docker tag broadcaster juhosii/devops-kubernetes:4.06.35
+docker push juhosii/devops-kubernetes:4.06.35
 
 kubectl config use-context k3d-k3s-default
 k3d cluster create --port 8082:30080@agent:0 -p 8081:80@loadbalancer --agents 2
@@ -25,7 +25,7 @@ helm repo update
 kubectl create namespace loki-stack
 helm upgrade --install loki --namespace=loki-stack grafana/loki-stack
 
-kubectl -n prometheus port-forward prometheus-kube-prometheus-stack-1731-prometheus-0 9090:9090
+kubectl -n prometheus port-forward prometheus-kube-prometheus-stack-1732-prometheus-0 9090:9090
 
 kubectl create namespace argo-rollouts
 kubectl apply -n argo-rollouts -f https://github.com/argoproj/argo-rollouts/releases/latest/download/install.yaml
@@ -42,12 +42,12 @@ helm upgrade --set metrics.enabled=true,auth.enabled=false my-nats oci://registr
 
 kubectl port-forward --namespace default svc/my-nats-metrics 7777:7777
 
-helm upgrade -f myvalyes.yaml my-nats oci://registry-1.docker.io/bitnamicharts/nats
+helm upgrade -f myvalues.yaml my-nats oci://registry-1.docker.io/bitnamicharts/nats
 kubectl get servicemonitors.monitoring.coreos.com -n prometheus
 kubectl -n prometheus get prometheus
-kubectl describe prometheus -n prometheus kube-prometheus-stack-1714-prometheus
-kubectl label servicemonitors.monitoring.coreos.com -n prometheus my-nats-metrics release=kube-prometheus-stack-1714644114
-kubectl -n prometheus port-forward prometheus-kube-prometheus-stack-1714-prometheus-0 9090
+kubectl describe prometheus -n prometheus kube-prometheus-stack-1732-prometheus
+kubectl label servicemonitors.monitoring.coreos.com -n prometheus my-nats-metrics release=kube-prometheus-stack-1732481652
+kubectl -n prometheus port-forward prometheus-kube-prometheus-stack-1732-prometheus-0 9090
 curl http://localhost:9090/api/v1/query\?query\=gnatsd_connz_in_msgs
 kubectl -n prometheus port-forward kube-prometheus-stack-1602180058-grafana-59cd48d794-4459m 3000
 ------------------------------------------------------ NATS

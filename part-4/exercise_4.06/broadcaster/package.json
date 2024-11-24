@@ -9,6 +9,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "nats": "^2.28.2"
+    "nats": "^2.28.2",
+    "node-fetch": "^2.7.0"
   }
 }

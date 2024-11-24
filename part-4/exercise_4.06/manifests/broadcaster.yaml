@@ -18,8 +18,8 @@ spec:
           image: BROADCASTER_IMAGE
           env:
             - name: NATS_URL
-              value: nats://my-nats.default:4222
-            - name: webhook
+              value: nats://my-nats:4222
+            - name: WEBHOOK
               valueFrom:
                 secretKeyRef:
                   name: postgres-secret

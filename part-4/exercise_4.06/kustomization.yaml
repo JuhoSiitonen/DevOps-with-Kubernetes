@@ -22,7 +22,7 @@ images:
   newTag: 4.06.1
 - name: BACKEND_IMAGE
   newName: juhosii/devops-kubernetes
-  newTag: 4.06.2
+  newTag: 4.06.25
 - name: BROADCASTER_IMAGE
   newName: juhosii/devops-kubernetes
-  newTag: 4.06.3
+  newTag: 4.06.35
