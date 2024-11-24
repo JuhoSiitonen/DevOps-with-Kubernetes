@@ -149,8 +149,12 @@ app.put('/todos/:id', async (req, res) => {
 
   try {
     await pool.query('UPDATE todo_list SET done = $1 WHERE id = $2', [done, id]);
-    await nc.publish('todo-data', natsCodec.encode(`TODO DONE: ${id}`))
-    console.log(`Todo ${id} updated successfully`);
+    if (nc) {
+      await nc.publish('todo-data', natsCodec.encode(`TODO DONE: ${id}`));
+    } else {
+      console.error('NATS client is not connected. Message not published.');
+    }
+        console.log(`Todo ${id} updated successfully`);
     res.status(200).send('Todo updated successfully');
   } catch (err) {
     console.error('Error updating todo:', err);
