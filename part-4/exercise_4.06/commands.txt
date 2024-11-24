@@ -1,10 +1,14 @@
 docker build -t frontend .
-docker tag frontend juhosii/devops-kubernetes:4.05.11
-docker push juhosii/devops-kubernetes:4.05.11
+docker tag frontend juhosii/devops-kubernetes:4.06.1
+docker push juhosii/devops-kubernetes:4.06.1
 
 docker build -t backend .
-docker tag backend juhosii/devops-kubernetes:4.05.24
-docker push juhosii/devops-kubernetes:4.05.24
+docker tag backend juhosii/devops-kubernetes:4.06.2
+docker push juhosii/devops-kubernetes:4.06.2
+
+docker build -t broadcaster .
+docker tag broadcaster juhosii/devops-kubernetes:4.06.3
+docker push juhosii/devops-kubernetes:4.06.3
 
 kubectl config use-context k3d-k3s-default
 k3d cluster create --port 8082:30080@agent:0 -p 8081:80@loadbalancer --agents 2
@@ -32,6 +36,7 @@ kubens project
 
 helm install nginx-ingress ingress-nginx/ingress-nginx
 
+------------------------------------------------------ NATS
 helm install --set auth.enabled=false my-nats oci://registry-1.docker.io/bitnamicharts/nats
 helm upgrade --set metrics.enabled=true,auth.enabled=false my-nats oci://registry-1.docker.io/bitnamicharts/nats
 
@@ -45,7 +50,7 @@ kubectl label servicemonitors.monitoring.coreos.com -n prometheus my-nats-metric
 kubectl -n prometheus port-forward prometheus-kube-prometheus-stack-1714-prometheus-0 9090
 curl http://localhost:9090/api/v1/query\?query\=gnatsd_connz_in_msgs
 kubectl -n prometheus port-forward kube-prometheus-stack-1602180058-grafana-59cd48d794-4459m 3000
-
+------------------------------------------------------ NATS
 
 export SOPS_AGE_KEY_FILE=/home/juho/key.txt
 sops --decrypt postgres-secret.enc.yaml > postgres-secret.yaml 

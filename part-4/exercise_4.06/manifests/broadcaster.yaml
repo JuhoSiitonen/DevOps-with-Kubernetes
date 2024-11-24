@@ -19,8 +19,8 @@ spec:
           env:
             - name: NATS_URL
               value: nats://my-nats.default:4222
-            - name: BROADCASTER_KEY
+            - name: webhook
               valueFrom:
                 secretKeyRef:
-                  name: project-broadcaster-key
-                  key: BROADCASTER_KEY
+                  name: postgres-secret
+                  key: WEBHOOK
