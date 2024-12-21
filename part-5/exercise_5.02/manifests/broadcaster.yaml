@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: project-broadcaster
+  namespace: project
+  annotations:
+    linkerd.io/inject: enabled
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: broadcaster
+  template:
+    metadata:
+      labels:
+        app: broadcaster
+    spec:
+      containers:
+        - name: broadcaster
+          image: BROADCASTER_IMAGE
+          env:
+            - name: NATS_URL
+              value: nats://my-nats:4222
+            - name: WEBHOOK
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: WEBHOOK

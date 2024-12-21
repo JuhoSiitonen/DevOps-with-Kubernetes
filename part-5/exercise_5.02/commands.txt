@@ -1,0 +1,86 @@
+docker build -t frontend .
+docker tag frontend juhosii/devops-kubernetes:5.02.1
+docker push juhosii/devops-kubernetes:5.02.1
+
+docker build -t backend .
+docker tag backend juhosii/devops-kubernetes:5.02.2
+docker push juhosii/devops-kubernetes:5.02.2
+
+docker build -t broadcaster .
+docker tag broadcaster juhosii/devops-kubernetes:5.02.3
+docker push juhosii/devops-kubernetes:5.02.3
+
+kubectl config use-context k3d-k3s-default
+k3d cluster create --port 8082:30080@agent:0 -p 8081:80@loadbalancer --agents 2
+docker exec k3d-k3s-default-agent-0 mkdir -p /tmp/kube
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""" LOGGING
+kubectl create namespace prometheus
+helm install prometheus-community/kube-prometheus-stack --generate-name --namespace prometheus
+kubectl get po -n prometheus
+kubectl -n prometheus port-forward kube-prometheus-stack-1730846032-grafana-6b8d54f9d6-nztp8 3000
+
+helm repo add grafana https://grafana.github.io/helm-charts
+helm repo update
+kubectl create namespace loki-stack
+helm upgrade --install loki --namespace=loki-stack grafana/loki-stack
+
+kubectl -n prometheus port-forward prometheus-kube-prometheus-stack-1732-prometheus-0 9090:9090
+
+kubectl create namespace argo-rollouts
+kubectl apply -n argo-rollouts -f https://github.com/argoproj/argo-rollouts/releases/latest/download/install.yaml
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""" LOGGING
+kubectl create namespace project
+kubens project
+
+helm install nginx-ingress ingress-nginx/ingress-nginx
+
+------------------------------------------------------ NATS
+helm install --set auth.enabled=false my-nats oci://registry-1.docker.io/bitnamicharts/nats
+helm upgrade --set metrics.enabled=true,auth.enabled=false my-nats oci://registry-1.docker.io/bitnamicharts/nats
+
+kubectl port-forward --namespace default svc/my-nats-metrics 7777:7777
+
+helm upgrade -f myvalues.yaml my-nats oci://registry-1.docker.io/bitnamicharts/nats
+kubectl get servicemonitors.monitoring.coreos.com -n prometheus
+kubectl -n prometheus get prometheus
+kubectl describe prometheus -n prometheus kube-prometheus-stack-1732-prometheus
+kubectl label servicemonitors.monitoring.coreos.com -n prometheus my-nats-metrics release=kube-prometheus-stack-1732481652
+kubectl -n prometheus port-forward prometheus-kube-prometheus-stack-1732-prometheus-0 9090
+curl http://localhost:9090/api/v1/query\?query\=gnatsd_connz_in_msgs
+kubectl -n prometheus port-forward kube-prometheus-stack-1602180058-grafana-59cd48d794-4459m 3000
+------------------------------------------------------ NATS
+
+export SOPS_AGE_KEY_FILE=/home/juho/key.txt
+sops --decrypt postgres-secret.enc.yaml > postgres-secret.yaml 
+
+kubectl apply -k .
+
+kubectl port-forward my-nats-0 8222:8222
+
+
+------------------------------------------------------ LINKERD
+linkerd check --pre
+
+linkerd install --crds | kubectl apply -f -
+
+linkerd install | kubectl apply -f -
+
+linkerd check
+
+kubectl get -n project deploy -o yaml \
+    | linkerd inject - \
+    | kubectl apply -f -
+
+linkerd -n project check --proxy
+
+linkerd viz install | kubectl apply -f -
+
+linkerd viz dashboard
+------------------------------------------------------ LINKERD
+
+kubectl get pods
+kubectl logs -f 
+
+k3d cluster stop

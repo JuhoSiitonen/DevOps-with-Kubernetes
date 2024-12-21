@@ -1,0 +1,28 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - manifests/postgres-secret.yaml
+  - manifests/postgres-configmap.yaml
+  - manifests/postgres-deployment.yaml
+  - manifests/persistentvolume.yaml
+  - manifests/persistentvolumeclaim.yaml
+  - manifests/todo-script-configmap.yaml
+  - manifests/todo-front-service.yaml
+  - manifests/todo-front-deployment.yaml
+  - manifests/todo-backend-service.yaml
+  - manifests/todo-backend-rollout.yaml
+  - manifests/ingress.yaml
+  - manifests/cronjob.yaml
+  - manifests/pg_dump-cronjob.yaml
+  - manifests/analysistemplate.yaml
+  - manifests/broadcaster.yaml
+images:
+- name: FRONT_IMAGE
+  newName: juhosii/devops-kubernetes
+  newTag: 4.06.1
+- name: BACKEND_IMAGE
+  newName: juhosii/devops-kubernetes
+  newTag: 4.06.25
+- name: BROADCASTER_IMAGE
+  newName: juhosii/devops-kubernetes
+  newTag: 4.06.35
